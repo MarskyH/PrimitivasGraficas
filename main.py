@@ -2,6 +2,10 @@ import math
 from grid import Grid
 from algoritimos.bresenham import bres
 from algoritimos.circulo import circ
+from algoritimos.polilinha import poli
+
+
+
 
 
 # Initialize grid
@@ -38,6 +42,12 @@ def circulo(selected_cells, rendered_cells, parameters):
     for ponto in resultado:
         new_cell = (ponto)
         grid.render_cell(new_cell)
+        
+def polilinha(selected_cells, rendered_cells, parameters):
+    resultado = poli(selected_cells)
+    for ponto in resultado:
+        new_cell = (ponto)
+        grid.render_cell(new_cell)
 
 
 # Defines another algorithm
@@ -59,6 +69,7 @@ def translate(selected_cells, rendered_cells, parameters):
 # grid.add_algorithm(name='Translate', parameters=['x', 'y'], algorithm=translate)
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
 grid.add_algorithm(name='Circulo', parameters=None, algorithm=circulo)
+grid.add_algorithm(name='Polilinhas', parameters=None, algorithm=polilinha)
 
 # Complete the script by displaying the grid
 grid.show()
