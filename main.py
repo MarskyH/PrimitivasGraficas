@@ -1,6 +1,7 @@
 # Import Grid class
 from grid import Grid
 from algoritimos.bresenham import bres
+from algoritimos.circulo import circ
 
 
 # Initialize grid
@@ -12,12 +13,20 @@ def my_render_cells_algorithm(selected_cells, rendered_cells, parameters):
         grid.render_cell(cell)
 
 # Adds the algorithm to the grid
-grid.add_algorithm(name="Desenhar pontos", parameters=None, algorithm=my_render_cells_algorithm)
+# grid.add_algorithm(name="Desenhar pontos", parameters=None, algorithm=my_render_cells_algorithm)
 
 def bresenham(selected_cells, rendered_cells, parameters):
     ponto1 = selected_cells[0]
     ponto2 = selected_cells[1]
     resultado = bres(ponto1, ponto2)
+    for ponto in resultado:
+        new_cell = (ponto)
+        grid.render_cell(new_cell)
+        
+def circulo(selected_cells, rendered_cells, parameters):
+    centro = selected_cells[0]
+    raio =  int(parameters['raio'])
+    resultado = circ(centro, raio)
     for ponto in resultado:
         new_cell = (ponto)
         grid.render_cell(new_cell)
@@ -39,8 +48,9 @@ def translate(selected_cells, rendered_cells, parameters):
             grid.render_cell(new_cell)
 
 # Adds the algorithm to the grid (notice how this one specifies 'x' and 'y')
-grid.add_algorithm(name='Translate', parameters=['x', 'y'], algorithm=translate)
+# grid.add_algorithm(name='Translate', parameters=['x', 'y'], algorithm=translate)
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
+grid.add_algorithm(name='Circulo', parameters=['raio'], algorithm=circulo)
 
 # Complete the script by displaying the grid
 grid.show()

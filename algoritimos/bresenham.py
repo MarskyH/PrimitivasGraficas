@@ -3,7 +3,7 @@ def reflexao(ponto1, ponto2):
     x2, y2 = ponto2
     dx = x2 - x1
     dy = y2 - y1
-    m = dy / dx
+    m = dy / dx if dx != 0 else 10
         
     condicoes = {
         'xy': False,
