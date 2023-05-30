@@ -11,4 +11,5 @@ def poli(pontos):
         resultados += bres(par_atual, par_seguinte)
     return resultados
         
-    
+
+       

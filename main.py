@@ -4,9 +4,8 @@ from algoritimos.bresenham import bres
 from algoritimos.circulo import circ
 from algoritimos.polilinha import poli
 from algoritimos.preenchimento import flood_fill
-from algoritimos.transformacao import transl
-from algoritimos.transformacao import escal
-from algoritimos.transformacao import rotac
+from algoritimos.transformacao import transl, escal, rotac, draw_polygon
+from algoritimos.curva import bezier
 
 grid = Grid(extent=10, size=500)
 
@@ -80,17 +79,24 @@ def rotacao(selected_cells, rendered_cells, parameters):
 
 def escala(selected_cells, rendered_cells, parameters):
     escala = list(parameters.values())
-
     x = int(escala[0])
     y = int(escala[1])
-
     escala = (x, y)
-    resultado = escal(escala, rendered_cells)
+    resultado = escal(rendered_cells, escala)
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
         grid.render_cell(new_cell)
-
+        
+def curva(selected_cells, rendered_cells, parameters):
+    print(rendered_cells)
+    grauCurva = len(selected_cells)  - 1
+    resultado  = bezier(selected_cells, rendered_cells, grauCurva)
+    print(resultado)
+    grid.clear_all()
+    for ponto in resultado:
+        new_cell = (ponto)
+        grid.render_cell(new_cell)
 
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
 grid.add_algorithm(name='Circulo', parameters=None, algorithm=circulo)
@@ -106,5 +112,7 @@ grid.add_algorithm(name='Translacao', parameters=None, algorithm=translacao)
 grid.add_algorithm(name='Escala', parameters=['x', 'y'], algorithm=escala)
 
 grid.add_algorithm(name='rotacao', parameters=['angulo'], algorithm=rotacao)
+
+grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
 
 grid.show()
