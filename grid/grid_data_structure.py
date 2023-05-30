@@ -4,12 +4,20 @@ class GridDataStructure:
         self.dimension = 2 * extent + 1
         self.rendered_cells = [[0 for _ in range(self.dimension)] for _ in range(self.dimension)]
         self.selected_cells = [[0 for _ in range(self.dimension)] for _ in range(self.dimension)]
+        self.fill_cells = [[0 for _ in range(self.dimension)] for _ in range(self.dimension)]
         self.selected_count = 0
 
     def render_cell(self, cell):
         if self._cell_is_in_bounds(cell):
             x, y = self.coordinate_to_index(cell)
             self.rendered_cells[x][y] = 1
+        else:
+            print(f'WARNING: render_cell command ignored. Cell {cell} is out of bounds.')
+
+    def fill_cell(self, cell):
+        if self._cell_is_in_bounds(cell):
+            x, y = self.coordinate_to_index(cell)
+            self.fill_cells[x][y] = 2
         else:
             print(f'WARNING: render_cell command ignored. Cell {cell} is out of bounds.')
 
@@ -34,6 +42,7 @@ class GridDataStructure:
             for j in range(self.dimension):
                 self.rendered_cells[i][j] = 0
                 self.selected_cells[i][j] = 0
+                self.fill_cells[i][j] = 0
         self.selected_count = 0
 
     def clear_selected_cells(self):
@@ -41,6 +50,7 @@ class GridDataStructure:
             for j in range(self.dimension):
                 self.selected_cells[i][j] = 0
         self.selected_count = 0
+
 
     def _cell_is_in_bounds(self, cell):
         x, y = cell

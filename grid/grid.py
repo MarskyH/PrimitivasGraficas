@@ -1,8 +1,13 @@
 from tkinter import Tk, Canvas, Label, Frame, Button, Entry
 from .grid_data_structure import GridDataStructure
 
-
 class Grid:
+
+    SELECT_COLOR = 'red'
+    DEFAULT_COLOR = 'white'
+    PRINT_COLOR = 'black'
+    FILL_COLOR = 'blue'
+  
     MARGIN_SIZE = 10
 
     def __init__(self, extent, size):
@@ -51,12 +56,19 @@ class Grid:
             run_button.pack(side='left')
         return frame
 
+    def fill_cell(self, cell):
+      self.raster.fill_cell(cell)
+
     def render_cell(self, cell):
         self.raster.render_cell(cell)
 
 
     def clear_cell(self, cell):
         self.raster.clear_cell(cell)
+        self._redraw()
+
+    def clear_all(self):
+        self.raster.clear_all()
         self._redraw()
 
     def show(self):
@@ -92,15 +104,19 @@ class Grid:
                 y2 = y1 + self.cell_size[1]
                 x, y = i - (self.raster.extent*2 + 1), j - (self.raster.extent*2 + 1)
                 if self.raster.selected_cells[x][y]:
-                    color = 'red'
-                    text_color = 'white'
+                    color = Grid.SELECT_COLOR
+                    text_color = Grid.DEFAULT_COLOR
                     text = str(self.raster.selected_cells[x][y])
                 elif self.raster.rendered_cells[x][y]:
-                    color = '#444444'
+                    color = Grid.PRINT_COLOR
                     text_color = ''
                     text = ''
+                elif self.raster.fill_cells[x][y]:
+                    color = Grid.FILL_COLOR
+                    text_color = ''
+                    text =  ''
                 else:
-                    color = ''
+                    color = Grid.DEFAULT_COLOR
                     text_color = ''
                     text = ''
                 self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline='gray')
