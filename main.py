@@ -7,6 +7,7 @@ from algoritimos.polilinha import poli
 from algoritimos.preenchimento import flood_fill
 from algoritimos.transformacao import transl, escal, rotac, draw_polygon
 from algoritimos.curva import bezier
+from algoritimos.recorte import sutherland_hodgman
 
 grid = Grid(extent=10, size=500)
 
@@ -82,7 +83,7 @@ def escala(selected_cells, rendered_cells, parameters):
     x = int(escala[0])
     y = int(escala[1])
     escala = (x, y)
-    resultado = poli(escal(selected_cells, escala))
+    resultado = poli(escal(selected_cells, escala, selected_cells[0]))
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -116,6 +117,13 @@ def varredura(selected_cells, rendered_cells, parameters):
             x_fim = intersecoes[i+1] if i+1 < len(intersecoes) else x_inicio
             for x in range(x_inicio, x_fim + 1):
                 grid.fill_cell((x, y))
+                
+def recorte(selected_cells, rendered_cells, parameters):
+    resultado = sutherland_hodgman(selected_cells, rendered_cells)
+    grid.clear_all()
+    for ponto in resultado:
+        new_cell = (ponto)
+        grid.render_cell(new_cell)
 
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
 
@@ -135,5 +143,6 @@ grid.add_algorithm(name='rotacao', parameters=['angulo'], algorithm=rotacao)
 
 grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
 
+grid.add_algorithm(name='Recorte', parameters=None, algorithm=recorte)
 
 grid.show()

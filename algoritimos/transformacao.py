@@ -17,23 +17,20 @@ def transl(p_translacao, vetor):
     return vetor
 
 
-def escal(points, factors):
+def escal(points, factors, fixed_point):
     print(points)
     xE = factors[0]
     yE = factors[1]
-
     scaledPoints = []
+    
     for point in points:
         x = point[0]
         y = point[1]
-        scaledX = x * xE
-        scaledY = y * yE
+        scaledX = fixed_point[0] + (x - fixed_point[0]) * xE
+        scaledY = fixed_point[1] + (y - fixed_point[1]) * yE
         scaledPoint = (scaledX, scaledY)
         scaledPoints.append(scaledPoint)
   
-        
-        
-
     return scaledPoints
 
 def draw_polygon(points):
