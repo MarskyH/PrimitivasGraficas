@@ -29,8 +29,10 @@ def escal(points, factors):
         scaledX = x * xE
         scaledY = y * yE
         scaledPoint = (scaledX, scaledY)
-        print(scaledPoint)
         scaledPoints.append(scaledPoint)
+  
+        
+        
 
     return scaledPoints
 

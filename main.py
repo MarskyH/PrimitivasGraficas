@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from grid import Grid
 from algoritimos.bresenham import bres
 from algoritimos.circulo import circ
@@ -67,10 +68,9 @@ def translacao(selected_cells, rendered_cells, parameters):
 
 def rotacao(selected_cells, rendered_cells, parameters):
     
-    angulo = list(parameters.values())
-    valor = int(angulo[0])
-  
-    resultado = rotac(valor, rendered_cells)
+    angulo = np.deg2rad(float(parameters['angulo']))
+    
+    resultado = rotac(angulo, rendered_cells)
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -82,7 +82,7 @@ def escala(selected_cells, rendered_cells, parameters):
     x = int(escala[0])
     y = int(escala[1])
     escala = (x, y)
-    resultado = escal(rendered_cells, escala)
+    resultado = poli(escal(selected_cells, escala))
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -98,14 +98,34 @@ def curva(selected_cells, rendered_cells, parameters):
         new_cell = (ponto)
         grid.render_cell(new_cell)
 
+def varredura(selected_cells, rendered_cells, parameters):
+    pontos = rendered_cells
+    y_min = min(point[1] for point in pontos)
+    y_max = max(point[1] for point in pontos)
+    for y in range(y_min, y_max + 1):
+        intersecoes = []
+        for i in range(len(pontos)):
+            x1, y1 = pontos[i]
+            x2, y2 = pontos[(i+1) % len(pontos)] 
+            if (y1 <= y < y2) or (y2 <= y < y1):
+                x_intersect = int(x1 + (float(y - y1) / (y2 - y1)) * (x2 - x1))
+                intersecoes.append(x_intersect)
+        intersecoes.sort()
+        for i in range(0, len(intersecoes), 2):
+            x_inicio = intersecoes[i]
+            x_fim = intersecoes[i+1] if i+1 < len(intersecoes) else x_inicio
+            for x in range(x_inicio, x_fim + 1):
+                grid.fill_cell((x, y))
+
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
+
 grid.add_algorithm(name='Circulo', parameters=None, algorithm=circulo)
 
 grid.add_algorithm(name='Polilinhas', parameters=None, algorithm=polilinha)
 
-grid.add_algorithm(name='Preenchimento',
-                   parameters=None,
-                   algorithm=preenchimento)
+grid.add_algorithm(name='Preenchimento',parameters=None, algorithm=preenchimento)
+
+grid.add_algorithm(name='Varredura',parameters=None, algorithm=varredura)
 
 grid.add_algorithm(name='Translacao', parameters=None, algorithm=translacao)
 
@@ -114,5 +134,6 @@ grid.add_algorithm(name='Escala', parameters=['x', 'y'], algorithm=escala)
 grid.add_algorithm(name='rotacao', parameters=['angulo'], algorithm=rotacao)
 
 grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
+
 
 grid.show()
