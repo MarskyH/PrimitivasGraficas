@@ -1,4 +1,4 @@
-from algoritimos.bresenham import bres
+from algoritmos.bresenham import bres
 
 def poli(pontos):
     pontos.append(pontos[0])

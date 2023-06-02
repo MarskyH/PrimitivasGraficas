@@ -1,5 +1,5 @@
 from math import sin, cos
-from algoritimos.bresenham import bres
+from algoritmos.bresenham import bres
 import numpy as np
 
 

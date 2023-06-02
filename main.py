@@ -1,15 +1,16 @@
 import math
 import numpy as np
 from grid import Grid
-from algoritimos.bresenham import bres
-from algoritimos.circulo import circ
-from algoritimos.polilinha import poli
-from algoritimos.preenchimento import flood_fill
-from algoritimos.transformacao import transl, escal, rotac, draw_polygon
-from algoritimos.curva import bezier
-from algoritimos.recorte import sutherland_hodgman
+from algoritmos.bresenham import bres
+from algoritmos.circulo import circ
+from algoritmos.polilinha import poli
+from algoritmos.preenchimento import flood_fill
+from algoritmos.transformacao import transl, escal, rotac, draw_polygon
+from algoritmos.curva import bezier
+from algoritmos.recorte import sutherland_hodgman
+from algoritmos.projecoes import geraProjecao
 
-grid = Grid(extent=10, size=500)
+grid = Grid(extent=10, size=800)
 
 
 def my_render_cells_algorithm(selected_cells, rendered_cells, parameters):
@@ -109,8 +110,8 @@ def varredura(selected_cells, rendered_cells, parameters):
             x1, y1 = pontos[i]
             x2, y2 = pontos[(i+1) % len(pontos)] 
             if (y1 <= y < y2) or (y2 <= y < y1):
-                x_intersect = int(x1 + (float(y - y1) / (y2 - y1)) * (x2 - x1))
-                intersecoes.append(x_intersect)
+                x_interscao = int(x1 + (float(y - y1) / (y2 - y1)) * (x2 - x1))
+                intersecoes.append(x_interscao)
         intersecoes.sort()
         for i in range(0, len(intersecoes), 2):
             x_inicio = intersecoes[i]
@@ -124,10 +125,26 @@ def recorte(selected_cells, rendered_cells, parameters):
     for ponto in resultado:
         new_cell = (ponto)
         grid.render_cell(new_cell)
+        
+def projecoes(selected_cells, rendered_cells, parameters):
+    resultado = geraProjecao(rendered_cells)
+    projecao = []
+    print(resultado)
+    for ponto in resultado[0]:
+        projecao.append(ponto)
+    for ponto in resultado[1]:
+        projecao.append(ponto)
+    for ponto in resultado[2]:
+        projecao.append(ponto)
+    for pontoProjecao in projecao:
+        new_cell = (pontoProjecao)
+        grid.render_cell(new_cell)
+  
+        
 
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
 
-grid.add_algorithm(name='Circulo', parameters=None, algorithm=circulo)
+grid.add_algorithm(name='Círculo', parameters=None, algorithm=circulo)
 
 grid.add_algorithm(name='Polilinhas', parameters=None, algorithm=polilinha)
 
@@ -135,14 +152,16 @@ grid.add_algorithm(name='Preenchimento',parameters=None, algorithm=preenchimento
 
 grid.add_algorithm(name='Varredura',parameters=None, algorithm=varredura)
 
-grid.add_algorithm(name='Translacao', parameters=None, algorithm=translacao)
+grid.add_algorithm(name='Translação', parameters=None, algorithm=translacao)
 
 grid.add_algorithm(name='Escala', parameters=['x', 'y'], algorithm=escala)
 
-grid.add_algorithm(name='rotacao', parameters=['angulo'], algorithm=rotacao)
+grid.add_algorithm(name='rotação', parameters=['angulo'], algorithm=rotacao)
 
 grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
 
 grid.add_algorithm(name='Recorte', parameters=None, algorithm=recorte)
+
+grid.add_algorithm(name='Projeção', parameters=None, algorithm=projecoes)
 
 grid.show()
