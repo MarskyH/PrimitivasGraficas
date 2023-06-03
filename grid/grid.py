@@ -1,4 +1,4 @@
-from tkinter import Tk, ttk, Canvas, Label, Frame, Button, Entry
+from tkinter import Tk, ttk, Canvas, Label, Frame, Button, Entry, Toplevel, StringVar
 from .grid_data_structure import GridDataStructure
 
 class Grid:
@@ -54,13 +54,10 @@ class Grid:
         frame.pack(side='top', pady=5)
         entries = []
         if parameters:
-            for variable in parameters:
-                var_label = Label(frame, text=variable)
-                var_label.pack(side='left')
-                var_entry = Entry(frame, width=5)
-                var_entry.pack(side='left')
-                entries.append((variable, var_entry))
-        if algorithm:
+            params = parameters  # Armazena os parâmetros em uma variável local
+            open_params_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._open_params_window(name, params, entries, algorithm))
+            open_params_button.pack(side='left')
+        if algorithm and parameters is None:
             run_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._on_run_click(algorithm, entries))
             run_button.pack(side='left')
      
@@ -71,7 +68,7 @@ class Grid:
         return frame
 
     def fill_cell(self, cell):
-      self.raster.fill_cell(cell)
+        self.raster.fill_cell(cell)
 
     def render_cell(self, cell):
         self.raster.render_cell(cell)
@@ -169,4 +166,39 @@ class Grid:
     def _clear_fill_cells(self):
         self.raster.clear_fill_cells()
         self._redraw()
+        
+    def _open_params_window(self, name, parameters, entries, algorithm):
+        self.params_window = Toplevel(self.root)
+        self.params_window.title(f'Parâmetros para {name}')
+        width = 300  # Largura inicial
+        height = 50 + len(parameters) * 30  # Altura inicial
+        self.params_window.geometry(f'{width}x{height}')
 
+        params_frame = Frame(self.params_window)
+        params_frame.pack(padx=10, pady=10)
+
+        for variable in parameters:
+            var_label = Label(params_frame, text=variable)
+            var_label.pack(side='left')
+
+            var_entry = Entry(params_frame, width=5)
+            var_entry.pack(side='left')
+
+            # Adicione a entrada à lista 'entries'
+            entries.append((variable, var_entry))
+
+        confirm_frame = Frame(self.params_window)
+        confirm_frame.pack(pady=10)
+
+        confirm_button = ttk.Button(confirm_frame, text='Confirmar', command=lambda: self._on_run_click(algorithm, self._get_params(entries)))
+        confirm_button.pack()
+
+        self.params_window.return_values = lambda entries: self._get_params(entries)
+
+
+    def _get_params(self, entries):
+        params = {variable: entry.get() for variable, entry in entries}
+        print(params)
+        self.params_window.destroy()
+        # Chame _on_run_click passando a lista 'params' como argumento
+        self._on_run_click(algorithm, params)

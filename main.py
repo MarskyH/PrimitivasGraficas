@@ -80,9 +80,9 @@ def rotacao(selected_cells, rendered_cells, parameters):
 
 
 def escala(selected_cells, rendered_cells, parameters):
-    escala = list(parameters.values())
-    x = int(escala[0])
-    y = int(escala[1])
+    print('parameters:', parameters)
+    x = int(parameters['x'])
+    y = int(parameters['y'])
     escala = (x, y)
     resultado = poli(escal(selected_cells, escala, selected_cells[0]))
     grid.clear_all()
