@@ -9,7 +9,7 @@ from algoritmos.transformacao import transl, escal, rotac
 from algoritmos.curva import bezier
 
 
-grid = Grid(extent=10, size=800)
+grid = Grid(extent=10, size=600)
 
 
 def bresenham(selected_cells, rendered_cells, parameters):
@@ -56,7 +56,14 @@ def preenchimento(selected_cells, rendered_cells, parameters):
 
 
 def translacao(selected_cells, rendered_cells, parameters):
-    resultado = transl(selected_cells, rendered_cells)
+    translacao = list(parameters.values())
+    
+    x = int(translacao[0])
+    y = int(translacao[1])
+    
+    translacao = (x, y)
+
+    resultado = transl(translacao, rendered_cells)
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -65,9 +72,13 @@ def translacao(selected_cells, rendered_cells, parameters):
 
 def rotacao(selected_cells, rendered_cells, parameters):
     
+    xp = int(selected_cells[0][0])
+    yp = int(selected_cells[0][1])
+    pivo = (xp, yp)
+    
     angulo = np.deg2rad(float(parameters['angulo']))
     
-    resultado = rotac(angulo, rendered_cells)
+    resultado = rotac(angulo, rendered_cells, pivo)
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -120,7 +131,7 @@ grid.add_algorithm(name='Preenchimento',parameters=None, algorithm=preenchimento
 
 grid.add_algorithm(name='Varredura',parameters=None, algorithm=varredura)
 
-grid.add_algorithm(name='Translação', parameters=None, algorithm=translacao)
+grid.add_algorithm(name='Translação', parameters=['x', 'y'], algorithm=translacao)
 
 grid.add_algorithm(name='Escala', parameters=['x', 'y'], algorithm=escala)
 

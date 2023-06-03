@@ -5,8 +5,8 @@ import numpy as np
 
 def transl(p_translacao, vetor):
 
-    xT = p_translacao[0][0]
-    yT = p_translacao[0][1]
+    xT = p_translacao[0]
+    yT = p_translacao[1]
 
     for i in range(len(vetor)):
         x = vetor[i][0]
@@ -35,12 +35,14 @@ def escal(points, factors, fixed_point):
 
 
 
-def rotac(angulo, vetor):
+def rotac(angulo, vetor, pivo):
+    xp = pivo[0]
+    yp = pivo[1]
+
     for i in range(len(vetor)):
         x = vetor[i][0]
         y = vetor[i][1]
 
-        vetor[i] = (int(round(x * cos(angulo) - y * sin(angulo))),
-                    int(round(x * sin(angulo) + y * cos(angulo))))
-
+        vetor[i] = (int(round(xp + (x - xp) * cos(angulo) - (y - yp) * sin(angulo))),
+                    int(round(yp + (x - xp) * sin(angulo) + (y - yp) * cos(angulo))))
     return vetor

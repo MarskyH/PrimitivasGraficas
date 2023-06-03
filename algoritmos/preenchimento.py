@@ -20,8 +20,8 @@ def flood_fill(x, y, pontosBorda, pontosPreenchidos):
 
 def var(pontos):
     resultado = []
-    y_min = min(point[1] for point in pontos)
-    y_max = max(point[1] for point in pontos)
+    y_min = min(point[0] for point in pontos)
+    y_max = max(point[0] for point in pontos)
     for y in range(y_min, y_max + 1):
         intersecoes = []
         for i in range(len(pontos)):
