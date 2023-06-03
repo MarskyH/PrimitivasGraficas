@@ -18,6 +18,7 @@ class Grid:
         dimension = 2 * extent + 1
         self.cell_size = self.grid_size[0] / dimension, self.grid_size[1] / dimension
         self.root = Tk()
+        self.clip_window = None
         
         style = ttk.Style()
         style.configure('Custom.TButton', foreground='#FCAB05', borderwidth=1, borderradius=10, width=30, height=10)
@@ -60,6 +61,8 @@ class Grid:
         if algorithm and parameters is None:
             run_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._on_run_click(algorithm, entries))
             run_button.pack(side='left')
+      
+            
      
         self.next_column += 1
         if self.next_column >= self.grid_columns:
@@ -101,7 +104,7 @@ class Grid:
             cell_y = int(y  // self.cell_size[1]) - self.raster.extent
             self._select_cell((cell_x, cell_y))
             self._redraw()
-
+            
 
     def _redraw(self):
         self.canvas.delete('all')
@@ -142,6 +145,26 @@ class Grid:
         zero_y = self.raster.extent * self.cell_size[1] + Grid.MARGIN_SIZE + self.cell_size[1] / 2
         self.canvas.create_line(zero_x, Grid.MARGIN_SIZE, zero_x, self.window_size[1] - Grid.MARGIN_SIZE, fill='#222222', width=3)
         self.canvas.create_line(Grid.MARGIN_SIZE, zero_y, self.window_size[0] - Grid.MARGIN_SIZE, zero_y, fill='#222222', width=3)
+        
+        if self.clip_window:
+            xmin, ymin = self.clip_window[0]
+            xmax, ymax = self.clip_window[2]
+            x1 = zero_x + (xmin + 0.5) * self.cell_size[0]
+            y1 = zero_y - (ymin + 0.5) * self.cell_size[1]
+            x2 = zero_x + (xmax + 0.5) * self.cell_size[0]
+            y2 = zero_y - (ymax + 0.5) * self.cell_size[1]
+            self.canvas.create_rectangle(x1, y1, x2, y2, outline='red', width=2)
+      
+
+    def _is_inside_clip_window(self, cell):
+        if self.clip_window is None:
+            return True
+
+        x, y = cell
+        xmin, ymin = self.clip_window[0]
+        xmax, ymax = self.clip_window[2]
+        return xmin <= x <= xmax and ymin <= y <= ymax
+
 
     def _on_run_click(self, action, entries):
         selected_cells = self.raster.get_selected_cells()
@@ -157,7 +180,9 @@ class Grid:
 
     def _clear_all(self):
         self.raster.clear_all()
+        self.clip_window = None
         self._redraw()
+    
 
     def _clear_selected_cells(self):
         self.raster.clear_selected_cells()
@@ -191,7 +216,6 @@ class Grid:
             # Adicione a entrada à lista 'entries'
             entries.append((variable, var_entry))
             
-        print('entries:', entries)
 
         confirm_frame = Frame(self.params_window)
         confirm_frame.pack(pady=10)

@@ -22,6 +22,7 @@ def bresenham(selected_cells, rendered_cells, parameters):
     ponto1 = selected_cells[0]
     ponto2 = selected_cells[1]
     resultado = bres(ponto1, ponto2)
+    print(resultado)
     for ponto in resultado:
         new_cell = (ponto)
         grid.render_cell(new_cell)
@@ -120,12 +121,14 @@ def varredura(selected_cells, rendered_cells, parameters):
                 grid.fill_cell((x, y))
                 
 def recorte(selected_cells, rendered_cells, parameters):
-    resultado = sutherland_hodgman(selected_cells, rendered_cells)
-    grid.clear_all()
-    for ponto in resultado:
-        new_cell = (ponto)
-        grid.render_cell(new_cell)
-        
+    xmin = int(parameters['xmin'])
+    ymin = int(parameters['ymin'])
+    xmax = int(parameters['xmax'])
+    ymax = int(parameters['ymax'])
+    grid.clip_window = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
+    grid._redraw()
+                
+    
 def projecoes(selected_cells, rendered_cells, parameters):
     resultado = geraProjecao(rendered_cells)
     projecao = []
@@ -139,6 +142,8 @@ def projecoes(selected_cells, rendered_cells, parameters):
     for pontoProjecao in projecao:
         new_cell = (pontoProjecao)
         grid.render_cell(new_cell)
+        
+        
   
         
 
@@ -160,8 +165,8 @@ grid.add_algorithm(name='rotação', parameters=['angulo'], algorithm=rotacao)
 
 grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
 
-grid.add_algorithm(name='Recorte', parameters=None, algorithm=recorte)
+grid.add_algorithm(name='Recorte', parameters=['xmin', 'ymin', 'xmax', 'ymax'], algorithm=recorte)
 
-grid.add_algorithm(name='Projeção', parameters=None, algorithm=projecoes)
+grid.add_algorithm(name='Projeção', parameters=[], algorithm=projecoes)
 
 grid.show()
