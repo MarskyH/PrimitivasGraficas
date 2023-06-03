@@ -317,7 +317,7 @@ class Grid:
                     obj.ortogonal()
                 else:
                     obj.perspectiva(int(entry_dist.get()))
-                for ponto in obj.saida:
+                for ponto in obj.resultado:
                     print(ponto)
                     self.render_cell(ponto)
                 pointList = []

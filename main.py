@@ -133,3 +133,17 @@ grid.add_algorithm(name='Recorte', parameters=['xmin', 'ymin', 'xmax', 'ymax'], 
 grid.add_algorithm(name='Projeções', parameters=[], algorithm=None)
 
 grid.show()
+
+
+# Coordenadas dos vértices 
+vertices = [
+    (1, 1, 1),  # Vértice A
+    (2, 1, 1),  # Vértice B
+    (2, 2, 1),  # Vértice C
+    (1, 2, 1),  # Vértice D
+    (1, 1, 10),  # Vértice E
+    (10, 1, 10),  # Vértice F
+    (10, 10, 10),  # Vértice G
+    (1, 10, 10)   # Vértice H
+]
+
