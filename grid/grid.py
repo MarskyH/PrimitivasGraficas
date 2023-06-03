@@ -71,10 +71,20 @@ class Grid:
         return frame
 
     def fill_cell(self, cell):
-        self.raster.fill_cell(cell)
+        if self.clip_window == None:
+            self.raster.fill_cell(cell)
+        else:
+            if self._is_inside_clip_window(cell):
+                self.raster.fill_cell(cell)
 
     def render_cell(self, cell):
-        self.raster.render_cell(cell)
+        #print(cell, self._is_inside_clip_window(cell))
+        if self.clip_window == None:
+                self.raster.render_cell(cell)
+        else:
+            if self._is_inside_clip_window(cell):
+                self.raster.render_cell(cell)
+      
 
 
     def clear_cell(self, cell):
@@ -149,11 +159,12 @@ class Grid:
         if self.clip_window:
             xmin, ymin = self.clip_window[0]
             xmax, ymax = self.clip_window[2]
-            x1 = zero_x + (xmin + 0.5) * self.cell_size[0]
-            y1 = zero_y - (ymin + 0.5) * self.cell_size[1]
+            x1 = zero_x + (xmin - 0.5) * self.cell_size[0]
+            y1 = zero_y - (ymin - 0.5) * self.cell_size[1]
             x2 = zero_x + (xmax + 0.5) * self.cell_size[0]
             y2 = zero_y - (ymax + 0.5) * self.cell_size[1]
             self.canvas.create_rectangle(x1, y1, x2, y2, outline='red', width=2)
+
       
 
     def _is_inside_clip_window(self, cell):
