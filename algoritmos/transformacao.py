@@ -33,17 +33,6 @@ def escal(points, factors, fixed_point):
   
     return scaledPoints
 
-def draw_polygon(points):
-    num_points = len(points)
-    novoPoligno = []
-    for i in range(num_points):
-        x0, y0 = points[i]
-        x1, y1 = points[(i + 1) % num_points]
-        line_points = bres((x0, y0), (x1, y1))
-        for point in line_points:
-            novoPoligno.append(point)
-            
-    return novoPoligno
 
 
 def rotac(angulo, vetor):
