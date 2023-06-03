@@ -147,7 +147,11 @@ class Grid:
     def _on_run_click(self, action, entries):
         selected_cells = self.raster.get_selected_cells()
         rendered_cells = self.raster.get_rendered_cells()
-        parameters = {entry[0]: entry[1].get() for entry in entries}
+        parameters = {}
+        for entry in entries:
+            variable = entry[0]
+            value = entry[1].get()
+            parameters[variable] = value
         action(selected_cells, rendered_cells, parameters)
         self._clear_selected_cells()
 
@@ -190,15 +194,22 @@ class Grid:
         confirm_frame = Frame(self.params_window)
         confirm_frame.pack(pady=10)
 
-        confirm_button = ttk.Button(confirm_frame, text='Confirmar', command=lambda: self._on_run_click(algorithm, self._get_params(entries)))
+        confirm_button = ttk.Button(confirm_frame, text='Confirmar', command=lambda: self._on_run_click(algorithm, entries))
         confirm_button.pack()
 
-        self.params_window.return_values = lambda entries: self._get_params(entries)
+        self.param_values = []  # Armazena os valores das entradas
+
+        def close_params_window():
+            self.params_window.destroy()
+
+        close_button = ttk.Button(confirm_frame, text='Fechar', command=close_params_window)
+        close_button.pack()
+
+        self.params_window.protocol("WM_DELETE_WINDOW", close_params_window)
+
+        self.params_window.mainloop()
+
+        return self.param_values
 
 
-    def _get_params(self, entries):
-        params = {variable: entry.get() for variable, entry in entries}
-        print(params)
-        self.params_window.destroy()
-        # Chame _on_run_click passando a lista 'params' como argumento
-        self._on_run_click(algorithm, params)
+  
