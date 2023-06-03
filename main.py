@@ -4,18 +4,12 @@ from grid import Grid
 from algoritmos.bresenham import bres
 from algoritmos.circulo import circ
 from algoritmos.polilinha import poli
-from algoritmos.preenchimento import flood_fill
-from algoritmos.transformacao import transl, escal, rotac, draw_polygon
+from algoritmos.preenchimento import flood_fill, var
+from algoritmos.transformacao import transl, escal, rotac
 from algoritmos.curva import bezier
-from algoritmos.recorte import sutherland_hodgman
-from algoritmos.projecoes import geraProjecao
+
 
 grid = Grid(extent=10, size=800)
-
-
-def my_render_cells_algorithm(selected_cells, rendered_cells, parameters):
-    for cell in selected_cells:
-        grid.render_cell(cell)
 
 
 def bresenham(selected_cells, rendered_cells, parameters):
@@ -95,7 +89,6 @@ def curva(selected_cells, rendered_cells, parameters):
     print(rendered_cells)
     grauCurva = len(selected_cells)  - 1
     resultado  = bezier(selected_cells, rendered_cells, grauCurva)
-    print(resultado)
     grid.clear_all()
     for ponto in resultado:
         new_cell = (ponto)
@@ -103,22 +96,11 @@ def curva(selected_cells, rendered_cells, parameters):
 
 def varredura(selected_cells, rendered_cells, parameters):
     pontos = rendered_cells
-    y_min = min(point[1] for point in pontos)
-    y_max = max(point[1] for point in pontos)
-    for y in range(y_min, y_max + 1):
-        intersecoes = []
-        for i in range(len(pontos)):
-            x1, y1 = pontos[i]
-            x2, y2 = pontos[(i+1) % len(pontos)] 
-            if (y1 <= y < y2) or (y2 <= y < y1):
-                x_interscao = int(x1 + (float(y - y1) / (y2 - y1)) * (x2 - x1))
-                intersecoes.append(x_interscao)
-        intersecoes.sort()
-        for i in range(0, len(intersecoes), 2):
-            x_inicio = intersecoes[i]
-            x_fim = intersecoes[i+1] if i+1 < len(intersecoes) else x_inicio
-            for x in range(x_inicio, x_fim + 1):
-                grid.fill_cell((x, y))
+    resultado = var(pontos)
+    for ponto in resultado:
+        new_cell = (ponto)
+        grid.fill_cell(new_cell)
+   
                 
 def recorte(selected_cells, rendered_cells, parameters):
     xmin = int(parameters['xmin'])
@@ -128,25 +110,6 @@ def recorte(selected_cells, rendered_cells, parameters):
     grid.clip_window = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
     grid._redraw()
                 
-    
-def projecoes(selected_cells, rendered_cells, parameters):
-    resultado = geraProjecao(rendered_cells)
-    projecao = []
-    print(resultado)
-    for ponto in resultado[0]:
-        projecao.append(ponto)
-    for ponto in resultado[1]:
-        projecao.append(ponto)
-    for ponto in resultado[2]:
-        projecao.append(ponto)
-    for pontoProjecao in projecao:
-        new_cell = (pontoProjecao)
-        grid.render_cell(new_cell)
-        
-        
-  
-        
-
 grid.add_algorithm(name='Bresenham', parameters=None, algorithm=bresenham)
 
 grid.add_algorithm(name='Círculo', parameters=None, algorithm=circulo)
@@ -161,12 +124,12 @@ grid.add_algorithm(name='Translação', parameters=None, algorithm=translacao)
 
 grid.add_algorithm(name='Escala', parameters=['x', 'y'], algorithm=escala)
 
-grid.add_algorithm(name='rotação', parameters=['angulo'], algorithm=rotacao)
+grid.add_algorithm(name='Rotação', parameters=['angulo'], algorithm=rotacao)
 
 grid.add_algorithm(name='Curva', parameters=None, algorithm=curva)
 
 grid.add_algorithm(name='Recorte', parameters=['xmin', 'ymin', 'xmax', 'ymax'], algorithm=recorte)
 
-grid.add_algorithm(name='Projeção', parameters=[], algorithm=projecoes)
+grid.add_algorithm(name='Projeções', parameters=[], algorithm=None)
 
 grid.show()
