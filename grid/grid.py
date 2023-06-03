@@ -55,7 +55,7 @@ class Grid:
         entries = []
         if parameters:
             params = parameters  # Armazena os parâmetros em uma variável local
-            open_params_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._open_params_window(name, params, entries, algorithm))
+            open_params_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._open_params_window(name, params, entries[:], algorithm))
             open_params_button.pack(side='left')
         if algorithm and parameters is None:
             run_button = ttk.Button(frame, text=name, style='Custom.TButton', width=25, command=lambda: self._on_run_click(algorithm, entries))
@@ -138,11 +138,10 @@ class Grid:
                     font = f'Helvetica {font_size} bold'
                     self.canvas.create_text(x_center, y_center, text=text, fill=text_color, font=font)
 
-                zero_x = self.raster.extent * self.cell_size[0] + Grid.MARGIN_SIZE + self.cell_size[0] / 2
-                zero_y = self.raster.extent * self.cell_size[1] + Grid.MARGIN_SIZE + self.cell_size[1] / 2
-                self.canvas.create_line(zero_x, Grid.MARGIN_SIZE, zero_x, self.window_size[1] - Grid.MARGIN_SIZE, fill='#222222', width=3)
-                self.canvas.create_line(Grid.MARGIN_SIZE, zero_y, self.window_size[0] - Grid.MARGIN_SIZE, zero_y, fill='#222222', width=3)
-
+        zero_x = self.raster.extent * self.cell_size[0] + Grid.MARGIN_SIZE + self.cell_size[0] / 2
+        zero_y = self.raster.extent * self.cell_size[1] + Grid.MARGIN_SIZE + self.cell_size[1] / 2
+        self.canvas.create_line(zero_x, Grid.MARGIN_SIZE, zero_x, self.window_size[1] - Grid.MARGIN_SIZE, fill='#222222', width=3)
+        self.canvas.create_line(Grid.MARGIN_SIZE, zero_y, self.window_size[0] - Grid.MARGIN_SIZE, zero_y, fill='#222222', width=3)
 
     def _on_run_click(self, action, entries):
         selected_cells = self.raster.get_selected_cells()
@@ -154,6 +153,7 @@ class Grid:
             parameters[variable] = value
         action(selected_cells, rendered_cells, parameters)
         self._clear_selected_cells()
+
 
     def _clear_all(self):
         self.raster.clear_all()
@@ -190,11 +190,13 @@ class Grid:
 
             # Adicione a entrada à lista 'entries'
             entries.append((variable, var_entry))
+            
+        print('entries:', entries)
 
         confirm_frame = Frame(self.params_window)
         confirm_frame.pack(pady=10)
 
-        confirm_button = ttk.Button(confirm_frame, text='Confirmar', command=lambda: self._on_run_click(algorithm, entries))
+        confirm_button = ttk.Button(confirm_frame, text='Confirmar', command=lambda: self._on_run_click(algorithm, entries[:]))
         confirm_button.pack()
 
         self.param_values = []  # Armazena os valores das entradas
@@ -210,6 +212,3 @@ class Grid:
         self.params_window.mainloop()
 
         return self.param_values
-
-
-  
