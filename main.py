@@ -1,3 +1,9 @@
+'''
+Dupla: 
+Marcus Huriel Lira Loureiro - 202004940010
+João Paulo de Souza Rodrigues - 202004940039
+'''
+
 import math
 import numpy as np
 from grid import Grid
