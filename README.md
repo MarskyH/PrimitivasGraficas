@@ -1,3 +1,9 @@
+Dupla: 
+
+Marcus Huriel Lira Loureiro - 202004940010
+
+João Paulo de Souza Rodrigues - 202004940039
+
 #Como rodar?
 
 1 - Clonar o projeto na sua máquina
